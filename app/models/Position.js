@@ -34,9 +34,11 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: 'Position',
-      tableName: 'tblPosition',
+      tableName: 'Position',
       underscored: true,
       timestamps: false,
+      charset: 'utf8',
+      collate: 'utf8_unicode_ci'
     },
   );
   return Position;

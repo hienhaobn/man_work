@@ -1,7 +1,7 @@
 const db = require('../models');
 
-const create = () => {
-
+const create = (position) => {
+  return db.Position.create(position);
 };
 
 const update = () => {
@@ -21,11 +21,11 @@ const getById = () => {
 };
 
 const PositionService = {
-    create,
-    update,
-    remove,
-    getAll,
-    getById,
+  create,
+  update,
+  remove,
+  getAll,
+  getById,
 };
 
 module.exports = PositionService;

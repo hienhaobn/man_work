@@ -2,29 +2,19 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const db = require("../models");
 const { userLoginDTO } = require("../dto/userDTO");
-const UserHelper = require('../services/user');
-const EmployeeProfileHelper = require('../services/employeeProfile');
+const UserService = require('../services/user');
 const RoleService = require("../services/role");
-const EmployeeProfile = db.EmployeeProfile;
+// const EmployeeProfile = db.EmployeeProfile;
 const User = db.User;
 const Role = db.Role;
 const Op = db.Sequelize.Op;
 
 const register = async (req, res) => {
   try {
-    const { username, password } = req.body;
-    const { token } = req.headers;
-    if (token) {
-      const accessToken = token.split(' ')[1];
-      jwt.verify(accessToken, process.env.JWT_ACCESS_KEY, (err, user) => {
-        if (err) {
-          res.status(403).json('Token is not valid');
-        }
-        req.user = user;
-      });
-    } else {
-      res.status(401).json('You are not authenticated');
-    }
+    const { username, password, email } = req.body;
+    const ROLE_USER = 3; // default khi tao tai khoan co role = 3. Phai dam bao co role = 3 trong bang Roles
+    const salt = await bcrypt.genSalt(10);
+    const hashed = await bcrypt.hash(password, salt);
     /**
      * body: {
      *  username,
@@ -32,11 +22,6 @@ const register = async (req, res) => {
      * role
      *}
      */
-    // save user info to table user
-    // getID nhan vien
-    const ROLE_USER = 3;
-    const salt = await bcrypt.genSalt(10);
-    const hashed = await bcrypt.hash(password, salt);
     // truong hop tim duoc va thieu truong hop khong tim duoc
     const role = await Role.findOne({
       where: {
@@ -48,24 +33,19 @@ const register = async (req, res) => {
 
     const roleId = role.uuid;
     const user = await User.create({
-      RoleUuid: roleId,
-    });
-
-    // save username, password to employeeProfile
-    const employeeProfile = await EmployeeProfile.create({
-      UserUuid: user.uuid,
+      role_uuid: roleId,
       username,
+      email,
       password: hashed,
+    }, {
+      raw: true
     });
+    console.log(user)
 
-    const data = {
-      user,
-      employeeProfile,
-    };
-    res.status(200).json(data);
+    return res.status(200).json(user);
   } catch (error) {
     console.log(error);
-    res.status(500).json(error);
+    return res.status(500).json(error);
   }
 };
 
@@ -98,36 +78,33 @@ const generateRefreshToken = (user) => {
 const login = async (req, res) => {
   try {
     const { username, password } = req.body;
-    const queryFields = [
-      {username},
-    ];
-    const employeeProfile = await EmployeeProfileHelper.getOneEmployeeProfileByFields(queryFields, ['username', 'uuid', 'password']);
-    const roleId = employeeProfile.User.RoleUuid;
-    const role = await RoleService.getRoleById(roleId);
-    const roleName = role.name;
+    const user = await UserService.getUserByUsername(username);
 
-    if (!employeeProfile) {
+    if (!user) {
       return res.status(404).json("Wrong username!");
     }
+
     const validPassword = await bcrypt.compare(
       password,
-      employeeProfile.password
+      user.password
     );
     if (!validPassword) {
       return res.status(404).json("Wrong password!");
     }
 
-    if (employeeProfile && validPassword) {
-      const userId = employeeProfile.User.uuid;
-      const username = employeeProfile.username;
-      const user = {
+    if (user && validPassword) {
+      const userId = user.uuid;
+      const username = user.username;
+      const roleName = user.Role.name;
+      const assignUser = {
         id: userId,
         username,
         role: roleName,
       }
-      const accessToken = authController.generateAccessToken(user);
+
+      const accessToken = authController.generateAccessToken(assignUser);
       // token du tru, khong phai token hay su dung
-      const refreshToken = authController.generateRefreshToken(user);
+      const refreshToken = authController.generateRefreshToken(assignUser);
 
       // add refreshToken to cookie
       res.cookie("refreshToken", refreshToken, {
@@ -136,10 +113,8 @@ const login = async (req, res) => {
         path: "/",
         sameSite: "strict", // ngan chan tan cong cros
       });
-      // DTO
-      const userData = userLoginDTO(employeeProfile);
-      return res.status(200).json({ ...userData, accessToken, role: roleName });
-      // return res.status(200).json(employeeProfile);
+      const userData = userLoginDTO(user);
+      return res.status(200).json({ ...userData, accessToken });
     }
   } catch (error) {
     console.log(error);

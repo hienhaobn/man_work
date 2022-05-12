@@ -32,7 +32,7 @@ const update = async (req, res, next) => {
 const remove = async (req, res, next) => {
     try {
         const positionId = req.params.id;
-        const position = await PositionService.removePosition(positionId);
+        const position = await PositionService.remove(positionId);
         if (!position) {
             console.log('Cannot remove position');
             return res.status(404).json({message: 'cannot remove position'});

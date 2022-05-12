@@ -1,10 +1,9 @@
 const db = require('../models');
 const ROLES = db.ROLES;
-const EmployeeProfile = db.EmployeeProfile;
 
 const checkDuplicateUsername = (req, res, next) => {
   const { username } = req.body;
-  EmployeeProfile.findOne({
+  db.User.findOne({
     where: {
       username
     }

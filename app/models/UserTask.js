@@ -1,17 +1,17 @@
 const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class EmployeeProfile extends Model {
+  class UserTask extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    // static associate(models) {
-    //   // define association here
-    // }
+    static associate(models) {
+      // define association here
+    }
   }
-  EmployeeProfile.init(
+  UserTask.init(
     {
       uuid: {
         type: DataTypes.UUID,
@@ -19,10 +19,10 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         allowNull: false,
       },
-      username: DataTypes.STRING,
-      password: DataTypes.STRING,
-      type: DataTypes.STRING,
-      salary: DataTypes.DOUBLE,
+      responsibility: DataTypes.STRING,
+      dateFrom: DataTypes.DATE,
+      dateTo: DataTypes.DATE,
+      taskmasterId: DataTypes.STRING, // Nguoi phan cong
       created_at: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
@@ -32,15 +32,16 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: DataTypes.NOW,
         onUpdate : DataTypes.NOW,
       },
-      authorId: DataTypes.UUID,
     },
     {
       sequelize,
-      modelName: 'EmployeeProfile',
-      tableName: 'tblEmployeeProfile',
+      modelName: 'UserTask',
+      tableName: 'UserTask',
       underscored: true,
       timestamps: false,
+      charset: 'utf8',
+      collate: 'utf8_unicode_ci'
     },
   );
-  return EmployeeProfile;
+  return UserTask;
 };

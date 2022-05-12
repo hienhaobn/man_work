@@ -1,7 +1,7 @@
 const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class Addresses extends Model {
+  class Task extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     //   // define association here
     // }
   }
-  Addresses.init(
+    Task.init(
     {
       uuid: {
         type: DataTypes.UUID,
@@ -19,9 +19,15 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         allowNull: false,
       },
-      parentId: DataTypes.UUID,
+      source: DataTypes.UUID,
       name: DataTypes.STRING,
-      type: DataTypes.INTEGER,
+      descriptions: DataTypes.TEXT,
+      note: DataTypes.TEXT,
+      type: DataTypes.STRING,
+      level: DataTypes.INTEGER,
+      file: DataTypes.STRING,
+      document: DataTypes.STRING,
+      authorId: DataTypes.STRING,
       created_at: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
@@ -35,11 +41,13 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: 'Addresses',
-      tableName: 'tblAddresses',
+      modelName: 'Task',
+      tableName: 'Task',
       underscored: true,
       timestamps: false,
+      charset: 'utf8',
+      collate: 'utf8_unicode_ci'
     },
   );
-  return Addresses;
+  return Task;
 };

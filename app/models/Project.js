@@ -1,7 +1,7 @@
 const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class WaterInfo extends Model {
+  class Project extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     //   // define association here
     // }
   }
-  WaterInfo.init(
+  Project.init(
     {
       uuid: {
         type: DataTypes.UUID,
@@ -19,10 +19,9 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         allowNull: false,
       },
-      price: DataTypes.STRING,
-      waterIndex: DataTypes.INTEGER,
-      date: DataTypes.DATE,
-      status: DataTypes.STRING,
+      name: DataTypes.STRING,
+      dataFrom: DataTypes.DATE,
+      dataTo: DataTypes.DATE,
       created_at: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
@@ -36,16 +35,13 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: 'WaterInfo',
-      tableName: 'tblWaterInfo',
+      modelName: 'Project',
+      tableName: 'Project',
       underscored: true,
       timestamps: false,
+      charset: 'utf8',
+      collate: 'utf8_unicode_ci'
     },
   );
-  return WaterInfo;
-};
-
-module.exports.StatusValues = {
-  ACTIVE: 'active',
-  INACTIVE: 'inactive',
+  return Project;
 };

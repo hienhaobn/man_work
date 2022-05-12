@@ -7,6 +7,21 @@ const getUserById = (userId) => {
   return db.User.findByPk(userId);
 };
 
+const getUserByUsername = (username) => {
+  return db.User.findOne({
+    where: {
+      username: {
+        [Op.eq]: username
+      }
+    },
+    include: [
+      {
+        model: db.Role,
+        attributes: ['name']
+      }
+    ]
+  });
+}
 const getOneUserByFields = (fields) => {
   return db.User.findOne({
     where: {
@@ -20,24 +35,6 @@ const getOneUserByFields = (fields) => {
 
 const getAllUsers = () => {
   return db.User.findAll({
-    attributes: ['uuid', 'managerId', 'manageAddressId', 'name', 'dob', 'sex', 'avatar', 'phone', 'nativePlace', 'placeOfPermanent', 'issuedPlace', 'status', 'ProvinceUuid', 'TownUuid', 'VillageUuid'],
-    include: [
-      {
-        model: db.EmployeeProfile,
-        attributes: ['username', 'salary'],
-        include: [
-          {
-            model: db.Department,
-            attributes: ['name'],
-          },
-          {
-            model: db.Position,
-            attributes: ['name'],
-            all: true,
-          },
-        ],
-      }
-    ],
     raw: true,
     nest: true,
   });
@@ -91,6 +88,7 @@ const updateUser = (user) => {
 
 const UserService = {
   getUserById,
+  getUserByUsername,
   getOneUserByFields,
   getAllUsers,
   getAllUsersByRoleType,

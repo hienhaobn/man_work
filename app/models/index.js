@@ -13,13 +13,12 @@ db.User = require('../models/User')(sequelize, Sequelize);
 db.Department = require('../models/Department')(sequelize, Sequelize);
 db.Permissions = require('../models/Permissions')(sequelize, Sequelize);
 db.Position = require('../models/Position')(sequelize, Sequelize);
-db.Price = require('../models/Price')(sequelize, Sequelize);
-db.Addresses = require('../models/Addresses')(sequelize, Sequelize);
 db.Role = require('../models/Role')(sequelize, Sequelize);
-db.EmployeeProfile = require('../models/EmployeeProfile')(sequelize, Sequelize);
-db.WaterInfo = require('../models/WaterInfo')(sequelize, Sequelize);
-db.History = require('../models/History')(sequelize, Sequelize);
-
+db.User = require('../models/User')(sequelize, Sequelize);
+db.Task = require('../models/Task')(sequelize, Sequelize);
+db.Project = require('../models/Project')(sequelize, Sequelize);
+// db.RolesPermissions = require('../models/RolesPermissions')(sequelize, Sequelize);
+// db.UserTask = require('../models/UserTask')(sequelize, Sequelize);
 // TODO: De tam o day
 const RolesPermissions = sequelize.define('RolesPermissions', {
   created_at: {
@@ -30,7 +29,35 @@ const RolesPermissions = sequelize.define('RolesPermissions', {
     type: Sequelize.DATE,
     defaultValue: Sequelize.NOW,
   },
-}, { timestamps: false })
+}, { timestamps: false });
+
+const UserProject = sequelize.define('UserProject', {
+  created_at: {
+    type: Sequelize.DATE,
+    defaultValue: Sequelize.NOW,
+  },
+  updated_at: {
+    type: Sequelize.DATE,
+    defaultValue: Sequelize.NOW,
+  },
+}, { timestamps: false });
+
+const UserTask = sequelize.define('UserTask', {
+  responsibility: Sequelize.STRING,
+  dateFrom: Sequelize.DATE,
+  dateTo: Sequelize.DATE,
+  taskmasterId: Sequelize.STRING, // Nguoi phan cong
+  created_at: {
+    type: Sequelize.DATE,
+    defaultValue: Sequelize.NOW,
+  },
+  updated_at: {
+    type: Sequelize.DATE,
+    defaultValue: Sequelize.NOW,
+  },
+}, { timestamps: false });
+
+/////////////////////////////////////////
 // relationship permission and roles
 db.Permissions.belongsToMany(db.Role, {
   through: RolesPermissions,
@@ -41,7 +68,6 @@ db.Permissions.belongsToMany(db.Role, {
 
 db.Role.belongsToMany(db.Permissions, {
   through: RolesPermissions,
-  // as: 'permissions',
   foreignKey: 'role_uuid',
   otherKey: 'permissions_uuid'
 });
@@ -52,43 +78,45 @@ db.User.belongsTo(db.Role, {
   foreignKey: 'role_uuid'
 });
 
-// relationship user and waterInfo
-db.User.hasMany(db.WaterInfo, {
-  as: 'users',
-});
-db.WaterInfo.belongsTo(db.User, {
-  foreignKey: 'user_uuid'
-});
-
-// relationship user and employeeProfile
-db.User.hasOne(db.EmployeeProfile)
-db.EmployeeProfile.belongsTo(db.User, {
-  foreignKey: 'user_uuid',
-});
-
-// relationship department and emplyeeProfile
-db.Department.hasMany(db.EmployeeProfile, {});
-db.EmployeeProfile.belongsTo(db.Department, {
-  foreignKey: 'department_uuid'
-});
-
-// relationship position and emplyeeProfile
-db.Position.hasMany(db.EmployeeProfile);
-db.EmployeeProfile.belongsTo(db.Position, {
+db.Position.hasMany(db.User);
+db.User.belongsTo(db.Position, {
   foreignKey: 'position_uuid'
 });
 
-// relationship user and addresses
-db.User.belongsTo(db.Addresses, {
-  as: 'Province'
+db.Department.hasMany(db.User);
+db.User.belongsTo(db.Department, {
+  foreignKey: 'department_uuid'
 });
 
-db.User.belongsTo(db.Addresses, {
-  as: 'Town'
+db.Project.hasMany(db.Task);
+db.Task.belongsTo(db.Project, {
+  foreignKey: 'project_uuid'
 });
 
-db.User.belongsTo(db.Addresses, {
-  as: 'Village'
+db.User.belongsToMany(db.Task, {
+  through: UserTask,
+  foreignKey: 'user_uuid',
+  otherKey: 'task_uuid'
+});
+
+db.Task.belongsToMany(db.User, {
+  through: UserTask,
+  foreignKey: 'task_uuid',
+  otherKey: 'user_uuid'
+});
+
+db.User.belongsToMany(db.Project, {
+  through: UserProject,
+  // as: 'roles',
+  foreignKey: 'user_uuid',
+  otherKey: 'project_uuid'
+});
+
+db.Project.belongsToMany(db.User, {
+  through: UserProject,
+  // as: 'permissions',
+  foreignKey: 'project_uuid',
+  otherKey: 'user_uuid'
 });
 
 db.ROLES = ['superadmin', 'admin', 'moderator', 'user'];

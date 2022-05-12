@@ -19,7 +19,9 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         allowNull: false,
       },
+      parentId: DataTypes.STRING,
       name: DataTypes.STRING,
+      code: DataTypes.STRING,
       created_at: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
@@ -34,9 +36,11 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: 'Department',
-      tableName: 'tblDepartment',
+      tableName: 'Department',
       underscored: true,
       timestamps: false,
+      charset: 'utf8',
+      collate: 'utf8_unicode_ci'
     },
   );
   return Department;

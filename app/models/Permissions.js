@@ -34,9 +34,11 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: 'Permissions',
-      tableName: 'tblPermissions',
+      tableName: 'Permissions',
       underscored: true,
       timestamps: false,
+      charset: 'utf8',
+      collate: 'utf8_unicode_ci'
     },
   );
   return Permissions;

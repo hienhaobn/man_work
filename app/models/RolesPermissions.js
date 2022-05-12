@@ -1,17 +1,17 @@
 const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class Role extends Model {
+  class RolesPermissions extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    // static associate(models) {
-    //   // define association here
-    // }
+    static associate(models) {
+      // define association here
+    }
   }
-  Role.init(
+  RolesPermissions.init(
     {
       uuid: {
         type: DataTypes.UUID,
@@ -19,8 +19,6 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         allowNull: false,
       },
-      name: DataTypes.STRING,
-      code: DataTypes.INTEGER,
       created_at: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
@@ -30,17 +28,16 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: DataTypes.NOW,
         onUpdate : DataTypes.NOW,
       },
-      author: DataTypes.UUID,
     },
     {
       sequelize,
-      modelName: 'Roles',
-      tableName: 'Roles',
+      modelName: 'RolesPermissions',
+      tableName: 'RolesPermissions',
       underscored: true,
       timestamps: false,
       charset: 'utf8',
       collate: 'utf8_unicode_ci'
     },
   );
-  return Role;
+  return RolesPermissions;
 };

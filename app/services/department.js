@@ -1,7 +1,7 @@
 const db = require('../models');
 
-const create = () => {
-
+const create = (department) => {
+    return db.Department.create(department);
 };
 
 const update = () => {

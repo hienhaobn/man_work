@@ -8,9 +8,7 @@ const db = require("./app/models");
 const authRoute = require('./app/routes/auth');
 const userRoute = require('./app/routes/user');
 const uploadRoute = require('./app/routes/upload');
-const customerRoute = require('./app/routes/customer');
 const roleRoute = require('./app/routes/role');
-const addressRoute = require('./app/routes/address');
 const positionRoute = require('./app/routes/position');
 const departmentRoute = require('./app/routes/department');
 
@@ -55,10 +53,8 @@ app.get('/', (req, res) => {
 
 app.use('/v1/auth', authRoute);
 app.use('/v1/user', userRoute);
-app.use('/v1/customer', customerRoute);
 app.use('/v1/upload', uploadRoute);
 app.use('/v1/role', roleRoute);
-app.use('/v1/address', addressRoute);
 app.use('/v1/position', positionRoute);
 app.use('/v1/department', departmentRoute);
 

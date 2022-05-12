@@ -23,8 +23,9 @@ const getOneRoleByField = (fields) => {
   });
 };
 
-const createRole = (role) => {
-  return Role.create(role);
+const createRole = ({name, code = 3}) => {
+
+  return Role.create({name, code});
 };
 
 const addPermissions = async (roleId, permissionId) => {

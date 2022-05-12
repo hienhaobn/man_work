@@ -32,9 +32,11 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: 'History',
-      tableName: 'tblHistory',
+      tableName: 'History',
       underscored: true,
       timestamps: false,
+      charset: 'utf8',
+      collate: 'utf8_unicode_ci'
     },
   );
   return History;

@@ -37,21 +37,6 @@ function initial() {
   db.Permissions.create({
     name: "view"
   });
-
-  // db.Addresses.create({
-  //   name: 'Bắc Ninh',
-  //   type: 1
-  // });
-
-  // db.Addresses.create({
-  //   name: 'Hà Nội',
-  //   type: 1
-  // });
-
-  // db.Addresses.create({
-  //   name: 'Bắc Giang',
-  //   type: 1
-  // });
 }
 
 module.exports = initial;
