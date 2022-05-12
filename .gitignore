@@ -2,5 +2,3 @@
 /package-lock.json
 /public/uploads
 /dist
-
-.env
