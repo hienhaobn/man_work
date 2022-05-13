@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
+const loggerMiddleware = require('./app/middleware/log');
 const db = require("./app/models");
 const authRoute = require('./app/routes/auth');
 const userRoute = require('./app/routes/user');
@@ -18,9 +19,7 @@ const initData = require('./app/helpers/initData');
  */
 
 const app = express();
-const optionCORS = {
-  origin: `http://localhost:8081`,
-}
+
 // db.sequelize.sync({force: true}).then(() => {
 
 db.sequelize.sync().then(() => {
@@ -33,7 +32,7 @@ db.sequelize.sync().then(() => {
 /**
  * app config
  */
-app.use(cors(optionCORS));
+app.use(cors());
 app.use(helmet());
 // parse request of content-type - application/json
 app.use(express.json());
@@ -41,7 +40,7 @@ app.use(cookieParser());
 // parse request of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('./public'));
-
+app.use(loggerMiddleware);
 /**
  * routes definition
  */

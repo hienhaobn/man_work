@@ -5,7 +5,9 @@ const router = require('express').Router();
 
 // GET ALL USERS
 
-router.get('/', authJwt.verifyToken, userController.getAllUsers);
+router.get('/', userController.getAllUsers);
+// router.get('/', authJwt.verifyToken, userController.getAllUsers);
+
 
 // DELETE USER
 // v1/user/123456
